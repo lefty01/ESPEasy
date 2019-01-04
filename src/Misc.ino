@@ -373,13 +373,12 @@ void setBitToUL(uint32_t& number, byte bitnr, bool value) {
 /*********************************************************************************************\
    report pin mode & state (info table) using json
   \*********************************************************************************************/
-String getPinStateJSON(boolean search, uint32_t key, const String& log, uint16_t noSearchValue)
+String getPinStateJSON(boolean search, uint32_t key, const String& log, int16_t noSearchValue)
 {
   checkRAM(F("getPinStateJSON"));
   printToWebJSON = true;
   byte mode = PIN_MODE_INPUT;
-  uint16_t value = noSearchValue;
-  String reply = "";
+  int16_t value = noSearchValue;
   boolean found = false;
 
   if (search && existPortStatus(key))
@@ -391,6 +390,8 @@ String getPinStateJSON(boolean search, uint32_t key, const String& log, uint16_t
 
   if (!search || (search && found))
   {
+    String reply;
+    reply.reserve(128);
     reply += F("{\n\"log\": \"");
     reply += log.substring(7, 32); // truncate to 25 chars, max MQTT message size = 128 including header...
     reply += F("\",\n\"plugin\": ");
@@ -398,38 +399,29 @@ String getPinStateJSON(boolean search, uint32_t key, const String& log, uint16_t
     reply += F(",\n\"pin\": ");
     reply += getPortFromKey(key);
     reply += F(",\n\"mode\": \"");
-    switch (mode)
-    {
-      case PIN_MODE_UNDEFINED:
-        reply += F("undefined");
-        break;
-      case PIN_MODE_INPUT:
-        reply += F("input");
-        break;
-      case PIN_MODE_INPUT_PULLUP:
-        reply += F("input pullup");
-        break;
-      case PIN_MODE_OFFLINE:
-        reply += F("offline");
-        break;
-      case PIN_MODE_OUTPUT:
-        reply += F("output");
-        break;
-      case PIN_MODE_PWM:
-        reply += F("PWM");
-        break;
-      case PIN_MODE_SERVO:
-        reply += F("servo");
-        break;
-      default:
-        reply += F("ERROR: Not Defined");
-    }
+    reply += getPinModeString(mode);
     reply += F("\",\n\"state\": ");
     reply += value;
     reply += F("\n}\n");
     return reply;
   }
   return "?";
+}
+
+String getPinModeString(byte mode) {
+  switch (mode)
+  {
+    case PIN_MODE_UNDEFINED:    return F("undefined");
+    case PIN_MODE_INPUT:        return F("input");
+    case PIN_MODE_INPUT_PULLUP: return F("input pullup");
+    case PIN_MODE_OFFLINE:      return F("offline");
+    case PIN_MODE_OUTPUT:       return F("output");
+    case PIN_MODE_PWM:          return F("PWM");
+    case PIN_MODE_SERVO:        return F("servo");
+    default:
+      break;
+  }
+  return F("ERROR: Not Defined");
 }
 
 
@@ -1130,10 +1122,9 @@ String getSystemLibraryString() {
     result += F(", LWIP: ");
     result += getLWIPversion();
   #endif
-  #ifdef PUYASUPPORT
+  if (puyaSupport()) {
     result += F(" PUYA support");
-  #endif
-
+  }
   return result;
 }
 
@@ -1155,6 +1146,36 @@ String getLWIPversion() {
 }
 #endif
 
+bool puyaSupport() {
+  bool supported = false;
+#ifdef PUYA_SUPPORT
+  // New support starting core 2.5.0
+  if (PUYA_SUPPORT) supported = true;
+#endif
+#ifdef PUYASUPPORT
+  // Old patch
+  supported = true;
+#endif
+  return supported;
+}
+
+uint8_t getFlashChipVendorId() {
+#ifdef PUYA_SUPPORT
+  return ESP.getFlashChipVendorId();
+#else
+  #if defined(ESP8266)
+    uint32_t flashChipId = ESP.getFlashChipId();
+    return (flashChipId & 0x000000ff);
+  #else
+    return 0xFF; // Not an existing function for ESP32
+  #endif
+#endif
+}
+
+bool flashChipVendorPuya() {
+  uint8_t vendorId = getFlashChipVendorId();
+  return vendorId == 0x85;  // 0x146085 PUYA
+}
 
 
 
@@ -1976,7 +1997,7 @@ float apply_operator(char op, float first, float second)
     case '/':
       return first / second;
     case '%':
-      return round(first) % round(second);
+      return static_cast<int>(round(first)) % static_cast<int>(round(second));
     case '^':
       return pow(first, second);
     default:

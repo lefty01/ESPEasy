@@ -406,7 +406,7 @@ int firstEnabledMQTTController() {
 bool getControllerProtocolDisplayName(byte ProtocolIndex, byte parameterIdx, String& protoDisplayName) {
   EventStruct tmpEvent;
   tmpEvent.idx=parameterIdx;
-  return CPlugin_ptr[ProtocolIndex](CPLUGIN_GET_PROTOCOL_DISPLAY_NAME, &tmpEvent, protoDisplayName);
+  return CPluginCall(ProtocolIndex, CPLUGIN_GET_PROTOCOL_DISPLAY_NAME, &tmpEvent, protoDisplayName);
 }
 
 void updateLoopStats() {
@@ -664,7 +664,8 @@ void run10TimesPerSecond() {
   }
   {
     START_TIMER;
-    PluginCall(PLUGIN_UNCONDITIONAL_POLL, 0, dummyString);
+//    PluginCall(PLUGIN_UNCONDITIONAL_POLL, 0, dummyString);
+    PluginCall(PLUGIN_MONITOR, 0, dummyString);
     STOP_TIMER(PLUGIN_CALL_10PSU);
   }
   if (Settings.UseRules && eventBuffer.length() > 0)
@@ -836,7 +837,7 @@ void SensorSendTask(byte TaskIndex)
   {
     byte varIndex = TaskIndex * VARS_PER_TASK;
 
-    boolean success = false;
+    bool success = false;
     byte DeviceIndex = getDeviceIndex(Settings.TaskDeviceNumber[TaskIndex]);
     LoadTaskSettings(TaskIndex);
 
@@ -903,6 +904,7 @@ void backgroundtasks()
   {
     return;
   }
+  START_TIMER
   runningBackgroundTasks=true;
 
   #if defined(ESP8266)
@@ -940,4 +942,5 @@ void backgroundtasks()
   statusLED(false);
 
   runningBackgroundTasks=false;
+  STOP_TIMER(BACKGROUND_TASKS);
 }

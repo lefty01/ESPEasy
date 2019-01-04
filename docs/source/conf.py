@@ -18,7 +18,6 @@
 from recommonmark.parser import CommonMarkParser
 import sphinx_bootstrap_theme
 
-
 # -- Project information -----------------------------------------------------
 
 project = u'ESP Easy'
@@ -141,7 +140,7 @@ html_theme_options = {
 
     # Global TOC depth for "site" navbar tab. (Default: 1)
     # Switching to -1 shows all levels.
-    'globaltoc_depth': 2,
+    'globaltoc_depth': 3,
 
     # Include hidden TOCs in Site navbar?
     #
@@ -306,5 +305,7 @@ rst_prolog = """
 .. |improved| replace:: :orange:`improved`
 .. |removed| replace:: :red:`removed`
 .. |fixed| replace:: :purple:`fixed`
+
+.. |unit_url| replace:: http://<esp easy ip or host name>/
 
 """
