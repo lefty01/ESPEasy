@@ -105,6 +105,7 @@ There's three different released versions of ESP Easy:
    ":ref:`P079_page`","|P079_status|","P079"
    ":ref:`P080_page`","|P080_status|","P080"
    ":ref:`P081_page`","|P081_status|","P081"
+   ":ref:`P082_page`","|P082_status|","P082"
 
 
 
@@ -203,6 +204,8 @@ Light/Lux
 
 Plugins: |Plugin_Light_Lux|
 
+Hardware: |P015_usedby|
+
 Motor
 -----
 
@@ -223,7 +226,7 @@ Position
 
 Plugins: |Plugin_Position|
 
-Hardware: |P013_usedby|
+Hardware: |P013_usedby|, |P082_usedby|
 
 Regulator
 ---------
