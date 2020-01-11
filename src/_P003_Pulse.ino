@@ -112,19 +112,19 @@ boolean Plugin_003(byte function, struct EventStruct *event, String& string)
 
     case PLUGIN_WEBFORM_SHOW_VALUES:
       {
-        string += F("<div class=\"div_l\">");
-        string += ExtraTaskSettings.TaskDeviceValueNames[0];
-        string += F(":</div><div class=\"div_r\">");
-        string += Plugin_003_pulseCounter[event->TaskIndex];
-        string += F("</div><div class=\"div_br\"></div><div class=\"div_l\">");
-        string += ExtraTaskSettings.TaskDeviceValueNames[1];
-        string += F(":</div><div class=\"div_r\">");
-        string += Plugin_003_pulseTotalCounter[event->TaskIndex];
-        string += F("</div><div class=\"div_br\"></div><div class=\"div_l\">");
-        string += ExtraTaskSettings.TaskDeviceValueNames[2];
-        string += F(":</div><div class=\"div_r\">");
-        string += Plugin_003_pulseTime[event->TaskIndex];
-        string += F("</div>");
+        addHtml(F("<div class=\"div_l\">"));
+        addHtml(String(ExtraTaskSettings.TaskDeviceValueNames[0]));
+        addHtml(F(":</div><div class=\"div_r\">"));
+        addHtml(String(Plugin_003_pulseCounter[event->TaskIndex]));
+        addHtml(F("</div><div class=\"div_br\"></div><div class=\"div_l\">"));
+        addHtml(String(ExtraTaskSettings.TaskDeviceValueNames[1]));
+        addHtml(F(":</div><div class=\"div_r\">"));
+        addHtml(String(Plugin_003_pulseTotalCounter[event->TaskIndex]));
+        addHtml(F("</div><div class=\"div_br\"></div><div class=\"div_l\">"));
+        addHtml(String(ExtraTaskSettings.TaskDeviceValueNames[2]));
+        addHtml(F(":</div><div class=\"div_r\">"));
+        addHtml(String(Plugin_003_pulseTime[event->TaskIndex]));
+        addHtml(F("</div>"));
         success = true;
         break;
       }
@@ -177,6 +177,25 @@ boolean Plugin_003(byte function, struct EventStruct *event, String& string)
         }
         Plugin_003_pulseCounter[event->TaskIndex] = 0;
         success = true;
+        break;
+      }
+
+      case PLUGIN_WRITE:
+      {
+        String command = parseString(string, 1);
+        if (command == F("resetpulsecounter"))
+        {
+          // Allow for an optional taskIndex parameter. When not given it will take the first task with this plugin.
+          const taskIndex_t taskIndex = parseCommandArgumentTaskIndex(string, 2);
+          if (validTaskIndex(taskIndex)) {
+            if (event->TaskIndex != taskIndex) {
+              break;
+            }
+          }
+          Plugin_003_pulseCounter[event->TaskIndex] = 0;
+          Plugin_003_pulseTotalCounter[event->TaskIndex] = 0;
+          success = true; // Command is handled.
+        }
         break;
       }
   }

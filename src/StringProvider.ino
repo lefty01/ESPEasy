@@ -1,7 +1,7 @@
 #include "StringProviderTypes.h"
 
-String getInternalLabel(LabelType::Enum label) {
-  return to_internal_string(getLabel(label));
+String getInternalLabel(LabelType::Enum label, char replaceSpace) {
+  return to_internal_string(getLabel(label), replaceSpace);
 }
 
 String getLabel(LabelType::Enum label) {
@@ -27,6 +27,9 @@ String getLabel(LabelType::Enum label) {
     case LabelType::BOOT_TYPE:              return F("Last Boot Cause");
     case LabelType::BOOT_COUNT:             return F("Boot Count");
     case LabelType::RESET_REASON:           return F("Reset Reason");
+    case LabelType::LAST_TASK_BEFORE_REBOOT: return F("Last Task");
+    case LabelType::SW_WD_COUNT:            return F("SW WD count");
+
 
     case LabelType::WIFI_CONNECTION:        return F("WiFi Connection");
     case LabelType::WIFI_RSSI:              return F("RSSI");
@@ -38,6 +41,9 @@ String getLabel(LabelType::Enum label) {
     case LabelType::IP_ADDRESS_SUBNET:      return F("IP / Subnet");
     case LabelType::GATEWAY:                return F("Gateway");
     case LabelType::CLIENT_IP:              return F("Client IP");
+    #ifdef FEATURE_MDNS
+    case LabelType::M_DNS:                  return F("mDNS");
+    #endif
     case LabelType::DNS:                    return F("DNS");
     case LabelType::DNS_1:                  return F("DNS 1");
     case LabelType::DNS_2:                  return F("DNS 2");
@@ -88,6 +94,9 @@ String getLabel(LabelType::Enum label) {
     case LabelType::SKETCH_FREE:            return F("Sketch Free");
     case LabelType::SPIFFS_SIZE:            return F("SPIFFS Size");
     case LabelType::SPIFFS_FREE:            return F("SPIFFS Free");
+    case LabelType::MAX_OTA_SKETCH_SIZE:    return F("Max. OTA Sketch Size");
+    case LabelType::OTA_2STEP:              return F("OTA 2-step Needed");
+    case LabelType::OTA_POSSIBLE:           return F("OTA possible");
 
   }
   return F("MissingString");
@@ -123,6 +132,8 @@ String getValue(LabelType::Enum label) {
     case LabelType::BOOT_TYPE:              return getLastBootCauseString();
     case LabelType::BOOT_COUNT:             break;
     case LabelType::RESET_REASON:           return getResetReasonString();
+    case LabelType::LAST_TASK_BEFORE_REBOOT: return decodeSchedulerId(lastMixedSchedulerId_beforereboot);
+    case LabelType::SW_WD_COUNT:            return String(sw_watchdog_callback_count);
 
     case LabelType::WIFI_CONNECTION:        break;
     case LabelType::WIFI_RSSI:              return String(WiFi.RSSI());
@@ -134,6 +145,9 @@ String getValue(LabelType::Enum label) {
     case LabelType::IP_ADDRESS_SUBNET:      return String(getValue(LabelType::IP_ADDRESS) + F(" / ") + getValue(LabelType::IP_SUBNET));
     case LabelType::GATEWAY:                return WiFi.gatewayIP().toString();
     case LabelType::CLIENT_IP:              return formatIP(WebServer.client().remoteIP());
+    #ifdef FEATURE_MDNS
+    case LabelType::M_DNS:                  return String(WifiGetHostname()) + F(".local");
+    #endif
     case LabelType::DNS:                    return String(getValue(LabelType::DNS_1) + F(" / ") + getValue(LabelType::DNS_2));
     case LabelType::DNS_1:                  return WiFi.dnsIP(0).toString();
     case LabelType::DNS_2:                  return WiFi.dnsIP(1).toString();
@@ -184,7 +198,77 @@ String getValue(LabelType::Enum label) {
     case LabelType::SKETCH_FREE:            break;
     case LabelType::SPIFFS_SIZE:            break;
     case LabelType::SPIFFS_FREE:            break;
+    case LabelType::MAX_OTA_SKETCH_SIZE:    break;
+    case LabelType::OTA_2STEP:              break;
+    case LabelType::OTA_POSSIBLE:           break;
 
   }
   return F("MissingString");
+}
+
+String getExtendedValue(LabelType::Enum label) {
+  switch (label)
+  {
+    case LabelType::UPTIME:
+    {
+      String result;
+      result.reserve(40);
+      int minutes = wdcounter / 2;
+      int days = minutes / 1440;
+      minutes = minutes % 1440;
+      int hrs = minutes / 60;
+      minutes = minutes % 60;
+
+      result += days;
+      result += F(" days ");
+      result += hrs;
+      result += F(" hours ");
+      result += minutes;
+      result += F(" minutes");
+      return result;
+    }
+
+    default:
+    break;
+  }
+  return "";
+}
+
+
+String getFileName(FileType::Enum filetype) {
+  String result;
+  switch (filetype) 
+  {
+    case FileType::CONFIG_DAT: 
+      result += F("config.dat");
+      break;
+    case FileType::NOTIFICATION_DAT:
+      result += F("notification.dat");
+      break;
+    case FileType::SECURITY_DAT:
+      result += F("security.dat");
+      break;
+    case FileType::RULES_TXT:
+      // Use getRulesFileName     
+      break;
+  }
+  return result;
+}
+
+String getFileName(FileType::Enum filetype, unsigned int filenr) {
+  if (filetype == FileType::RULES_TXT) {
+    return getRulesFileName(filenr);
+  }
+  return getFileName(filetype);
+}
+
+// filenr = 0...3 for files rules1.txt ... rules4.txt
+String getRulesFileName(unsigned int filenr) {
+  String result;
+  if (filenr < 4) {
+    result += F("rules");
+    result += filenr + 1;
+    result += F(".txt");
+  }
+  return result;
 }

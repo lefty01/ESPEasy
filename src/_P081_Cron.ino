@@ -147,15 +147,15 @@ boolean Plugin_081(byte function, struct EventStruct *event, String& string)
       time_t last = converter.time;
       converter.value = NEXTEXECUTION;
       time_t next = converter.time;
-      string += F("<div class=\"div_l\">");
-      string += ExtraTaskSettings.TaskDeviceValueNames[0];
-      string += F(":</div><div class=\"div_r\">");
-      string += getDateTimeString(*gmtime(&last));
-      string += F("</div><div class=\"div_br\"></div><div class=\"div_l\">");
-      string += ExtraTaskSettings.TaskDeviceValueNames[1];
-      string += F(":</div><div class=\"div_r\">");
-      string += getDateTimeString(*gmtime(&next));
-      string += F("</div>");
+      addHtml(F("<div class=\"div_l\">"));
+      addHtml(ExtraTaskSettings.TaskDeviceValueNames[0]);
+      addHtml(F(":</div><div class=\"div_r\">"));
+      addHtml(getDateTimeString(*gmtime(&last)));
+      addHtml(F("</div><div class=\"div_br\"></div><div class=\"div_l\">"));
+      addHtml(ExtraTaskSettings.TaskDeviceValueNames[1]);
+      addHtml(F(":</div><div class=\"div_r\">"));
+      addHtml(getDateTimeString(*gmtime(&next)));
+      addHtml(F("</div>"));
       success = true;
       break;
     }
@@ -260,8 +260,9 @@ boolean Plugin_081(byte function, struct EventStruct *event, String& string)
 #endif
             addLog(LOG_LEVEL_DEBUG, String(F("Next execution:")) + getDateTimeString(*gmtime(&next)));
             LoadTaskSettings(event->TaskIndex);
-            if(function != PLUGIN_TIME_CHANGE)
-              rulesProcessing(String(F("Cron#")) + String(ExtraTaskSettings.TaskDeviceName));
+            if(function != PLUGIN_TIME_CHANGE) {
+              eventQueue.add(String(F("Cron#")) + String(ExtraTaskSettings.TaskDeviceName));
+            }
           }
           else
           {
@@ -272,7 +273,7 @@ boolean Plugin_081(byte function, struct EventStruct *event, String& string)
 
       }
       success = true;
-
+	  break;
     }
 
     case PLUGIN_TEN_PER_SECOND:
@@ -281,7 +282,7 @@ boolean Plugin_081(byte function, struct EventStruct *event, String& string)
       //be careful on what is added here. Heavy processing will result in slowing the module down!
 
       success = true;
-
+	  break;
     }
   }   // switch
   return success;
