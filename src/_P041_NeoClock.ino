@@ -1,8 +1,10 @@
+#include "_Plugin_Helper.h"
 #ifdef USES_P041
 //#######################################################################################################
 //#################################### Plugin 041: NeoPixel clock #######################################
 //#######################################################################################################
 #include <Adafruit_NeoPixel.h>
+
 
 #define NUM_LEDS      114
 
@@ -27,7 +29,7 @@ boolean Plugin_041(byte function, struct EventStruct *event, String& string)
       {
         Device[++deviceCount].Number = PLUGIN_ID_041;
         Device[deviceCount].Type = DEVICE_TYPE_SINGLE;
-        Device[deviceCount].VType = SENSOR_TYPE_NONE;
+        Device[deviceCount].VType = Sensor_VType::SENSOR_TYPE_NONE;
         Device[deviceCount].Ports = 0;
         Device[deviceCount].PullUpOption = false;
         Device[deviceCount].InverseLogicOption = false;
@@ -149,8 +151,8 @@ boolean Plugin_041(byte function, struct EventStruct *event, String& string)
 
 void Plugin_041_update()
 {
-  byte Hours = hour();
-  byte Minutes = minute();
+  byte Hours = node_time.hour();
+  byte Minutes = node_time.minute();
   resetAndBlack();
   timeToStrip(Hours, Minutes);
   Plugin_041_pixels->show(); // This sends the updated pixel color to the hardware.

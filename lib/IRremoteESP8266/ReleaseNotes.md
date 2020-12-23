@@ -1,5 +1,293 @@
 # Release Notes
 
+## _v2.7.13 (20201125)_
+
+**[Bug Fixes]**
+- Fix crash when IRac::sendAc(state_t, *state_t) called with SAMSUNG_AC & NULL (#1341 #1339)
+- Mitsubishi112 & 136: `setSwingV()` incorrectly sets mode. (#1337)
+- Typo preventing RC6 from compiling when other protocols disabled. (#1332 #1331)
+
+**[Features]**
+- Coolix: Improve Sensor(ZoneFollow) and add Vane Step support. (#1340 #1318)
+
+**[Misc]**
+- refactor ir_Coolix (#1340)
+- refactor ir_Mitsubishi (#1336)
+- refactor ir_MitsubishiHeavy (#1333)
+
+
+## _v2.7.12 (20201113)_
+
+**[Bug Fixes]**
+- `defaultBits()` returned incorrect result for `PANASONIC_AC` (#1307 #1314)
+- Fix LG2 timings and refactor `decodeLG()` (#1298 #1304)
+
+**[Features]**
+- Midea: Add support for "Follow Me"/Sensor, Turbo, Light, & Timers (#1318 #1327)
+- SharpAc: Add model support for A705 (#1309 #1313)
+- Add basic support for Panasonic A/C 32bit/16bit protocol. (#1307 #1316)
+- Add support for Elite Screens protocol. (#1306 #1310)
+- IRrecvDumpV2+: Add tolerance setting. (#1292)
+- Add basic support for the Mirage Protocol. (#1289 #1291)
+- Internationalisation Support
+  - pt-BR: Add Portuguese/Brazilian support. (#1303)
+  - de-DE: Backfill missing strings (#1294)
+  - de-DE: update for recent addition of 'tolerance' (#1293)
+  - de-DE: Translate root README.md into German (#1297)
+
+**[Misc]**
+- refactor ir_LG (#1325)
+- refactor ir_Kelvinator (#1317)
+- refactor ir_Hitachi (#1308)
+- refactor ir_Goodweather (#1295)
+- refactor ir_Electra (#1290)
+- refactor ir_Daikin (#1288)
+- Update Kaysun supported models. (#1322)
+- fix typos/spelling mistakes (#1301)
+- Add some missing Doxygen class/data-type descriptions. (#1287)
+
+
+## _v2.7.11 (20201002)_
+
+**[Features]**
+- Transcold: Add detailed support. (#1256 #1278)
+- Airwell/Whirlpool: Add handling of previous state to `.toCommon()` (#1275 #1276)
+- IRMQTTServer: Change how MQTT packet/buffer size is set. (#1271)
+- Fujitsu: Add support for timers. (#1255 #1261 #1262)
+- Neoclima: Add Economy & Fahrenheit support (#1260 #1265)
+- Technibel: Cleanup and code fixes/improvements. (#1259 #1266)
+- Technibel: Add detailed A/C support (#1259)
+- Transcold: Add basic support. (#1256 #1258)
+
+**[Misc]**
+- refactor ir_Delonghi (#1285)
+- Whirlpool: Change default mode in `convertMode()` (#1283 #1284)
+- SamsungAC: Unit tests to help debug poor signal (#1277 #1280)
+- Add question & note about VS1838b use to issue template. (#1281)
+- rewrite ir_Corona (#1274)
+- tools/mkkeywords: Fix minor parsing issue. (#1272)
+- Add Zhongxian Li to Contributers.md (#1270)
+- rewrite Carrier (#1269)
+- rewrite ir_Argo by using bit field (#1264)
+- rewrite ir_Amcor by using bit field (#1263)
+- Update Fujitsu supported model info.
+- Clarify the scope of the LittleFS breaking change.
+
+
+## _v2.7.10 (20200831)_
+
+**[BREAKING CHANGES]**
+- IRMQTTServer & Web-AC-Control: move SPIFFS to LittleFS for ESP8266 (#1182 #1226)
+- Daikin176: Change & increase operating mode values. (#1233 #1235)
+
+**[Bug Fixes]**
+- TOSHIBA_AC: not turning off when using `IRac` class. (#1250 #1251)
+- Haier: change position of Fan speed bits. (#1246 #1247)
+
+**[Features]**
+- Voltas: Add detailed support for Voltas A/Cs (#1238 #1248)
+- Add support for Metz protocol. (#1241 #1242)
+- Basic support for Voltas A/C protocol (#1238 #1243)
+- Add low level bit formatting sanity checks. (#1232)
+
+**[Misc]**
+- Rewrite Airwell by using bit fields (#1254)
+- Rewrite Haier YRW02 using bit fields (#1253)
+- rewrite Haier HSU07-HEA03 (#1246 #1247)
+- rewrite ir_Gree & ir_Midea by using bit field (#1240)
+- Incorrect usage of `assert()` (#1244 #1245 #1232)
+- rewrite Gree (#1210)
+
+
+## _v2.7.9 (20200730)_
+
+**[Bug Fixes]**
+- Fix mistake in `IRLGAc::convertFan()`. (#1214 #1215)
+
+**[Features]**
+- Add Sanyo A/C (72 bit) protocol with detailed support. (#1211 #1218)
+- Added modification to Midea unit to support Danby DAC AC units.  (#1213)
+- ToshibaAc: Rework to support Carrier models and add more settings. (#1205 #1212)
+- Add detailed support for Airwell A/C protocol. (#1202 #1204)
+
+**[Misc]**
+- Pioneer: Update timings based on user collected data. (#1220 #1222)
+- Samsung36: Adjust timings & update unit tests. (#1220 #1221)
+- Consolidate common code: Inverted byte pairs (#1219)
+- Remove duplicate code from `IRToshibaAC::calcChecksum()` (#1207)
+- Update missing/incorrect doxygen comments (#1203)
+
+
+## _v2.7.8 (20200622)_
+
+**[BREAKING CHANGES]**
+- Fix Manchester code handling; Increase Airwell to `34` bits. (#1200)
+
+**[Bug Fixes]**
+- Carrier40: Use correct gap value. (#1193)
+
+**[Features]**
+- CarrierAc64: Add detailed support. (#1133)
+- Add experimental support for Hitachi A/C 344 bit protocol (#1139)
+- Automatic & full library code/API documentation via Doxygen (#1150 #1154 #1155 #1156 #1158 #1165 #1167 #1169 #1180 #1184 #1189 #1191 #1194 #1195 #1197 #1198)
+- Hitachi344: Add detailed support and change bit ordering. (#1147)
+- Add Corona AC Protocol (#1152)
+- Hitachi344: Add Swing(H) and improve Swing(V) (#1148)
+- Update auto_analyse_raw_data.py with better code comment sections (#1164)
+- Add support for Midea24 protocol. (#1171)
+- Add basic Zepeal protocol support (#1178)
+
+**[Misc]**
+- scrape_supported_devices.py: avoid changes to SupportedProtocols.md (#1140)
+- auto_analyze nice exit on empty rawdata input (#1141)
+- Comments update + cleanup (#1143)
+- Update D_STR_IRRECVDUMP_STARTUP text and comments. (#1144)
+- Minor code cleanups (#1149)
+- Update `README.md`'s to point to new API docs. (#1151)
+- Update "Supports" sections (#1160)
+- Add a `doxygen` check to CI/Travis. (#1161)
+- scrape_supported_devices: warn about misplaced or legacy supports sections (#1159)
+- Add Supports sections to some files (#1163 #1166)
+- Fix compile error when `DEBUG` is enabled.
+- Add no-output option and return code on error to scrape_supported_devices
+- Travis: Add scrape_supported_devices error check
+- Update auto_analyse_raw_data.py to have a default Supports: section
+- Treat compiler warnings as errors. (#1174)
+- Remove `calcLGChecksum()` and use new generic `sumNibbles()` (#1175)
+- Suppress more potential compiler warnings. (#1179)
+- Load balance travis tasks to reduce wall clock time. (#1183)
+- Set PlatformIO's default baudrate to 115200 (#1188)
+- Some fixes to Doshisha protocol handler
+- Minor cleanups of Corona and Zepeal
+- Enable Doxygen warning when the parameters for a function/method/procedure are wrong/missing. (#1196)
+
+
+## _v2.7.7 (20200519)_
+
+**[BREAKING CHANGES]**
+- Fix Symphony protocol. (#1107, #1105)
+  * Now 12 bits and bits are inverted. All previous codes will no longer work.
+- IRMQTTServer: Better handle power & mode operations for Home Assistant. (#1099, #1092)
+  * When `MQTT_CLIMATE_HA_MODE` is enabled (default) this will break previous operation mode resumption when power is changed.
+
+**[Bug Fixes]**
+- Set correct return type for `.calibrate()` (#1095, #1093)
+
+**[Features]**
+- Add basic support for Carrier 40 & 64 bit protocols. (#1125, #1112, #1127)
+- Gree: Enable native support for Fahrenheit (#1124, #1121)
+- Gree: Add option to control display temp source. (#1120, #1118)
+- Add support for Multibrackets protocol. (#1106, #1103)
+- Add RawToPronto.py tool & improve `sendPronto()` precision (#1104, #1103)
+- Add support for `Doshisha` LED light protocol (#1115)
+- Introduce IRrecvDumpV3 with basic OTA update support (#1111)
+- Add detailed support for Delonghi A/C (#1098, #1096)
+- Improved support for SharpAc. (#1094, #1091)
+- Update auto_analyse to use new decode call structure. (#1102, #1097)
+- Added Blynk app example (#1090)
+
+**[Misc]**
+- update auto_analyse script to use new param documentation (#1126)
+- Improve `raw_to_pronto_code.py` (#1122, #1103)
+- Use pattern rules in Makefiles to reduce specific rule (#1110)
+- Update list of supported Daikin models. (#1101)
+
+
+## _v2.7.6 (20200425)_
+
+**[Features]**
+- IRMQTTServer: Use more i18n text. (#1086)
+- Convert Protocol names to shared text. Saves ~3k of flash. (#1078)
+- Add Chinese translation (zh-CN) & add utf-8 support. (#1080, #1085)
+
+**[Misc]**
+- IRMQTTServer: Ensure MQTT_MAX_PACKET_SIZE is correctly set. (#1084)
+- Add Italian locale to IRrecvDumpV2 platformio file.
+
+
+## _v2.7.5 (20200409)_
+
+**[Features]**
+- Detailed support for `HITACHI_AC1` protocol. (#1056, #1061, #1072)
+- update sharp to match Sharp AH-A5SAY (#1074)
+- Experimental support for AIRWELL protocol. (#1069, #1070)
+- SamsungAC: Add Breeze (Aka WindFree) control (#1062, #1071)
+- Support for Daikin FFN-C A/C (#1064, #1065)
+- Add basic support for HITACHI_AC3 protocol. (#1060, #1063)
+- Add support for `SYMPHONY` 11 bit protocol. (#1057, #1058)
+- IRMQTTServer: Improve Home-Assistant discovery by sending a 'device' with the discovery packet (#1055)
+
+**[Misc]**
+- Clean up support status of various protocols.
+- Add `decodeToState()` unit tests to all supported protocols (#1067, #1068)
+- Add Gree AC example code. (#1066)
+
+
+## _v2.7.4 (20200226)_
+
+**[Bug Fixes]**
+- IRMQTTServer: Fix bug when receiving an IR A/C message and not re-transmitting it. (#1035, #1038)
+- Coolix: `setRaw()` doesn't update power state. (#1040, #1041)
+
+**[Features]**
+- Electra: Add improved feature support. (#1033, #1051)
+- Add support for Epson protocol. (#1034, #1050)
+- Add options to `decode()` to aid detection. Improve NEC detection. (#1042, #1046)
+- SamsungAc: Add support for Light & Ion (VirusDoctor). (#1045, #1048, #1049)
+- Add Italian (it-IT) locale/language support. (#1047) (kudos @egueli)
+- gc_decode: Add repeat support for pronto codes. (#1034, #1043)
+
+**[Misc]**
+- Update supported SamsungAc devices (#1045)
+- Coolix: Subtle protocol timing adjustments (#1036, #1037)
+- Add supported Electra device model info (#1033)
+
+
+## _v2.7.3 (20200130)_
+
+**[Features]**
+- Allow protocols to be enabled or disabled with compiler flags. (#1013, #1012)
+- Panasonic AC: Add Ion Filter support for DKE models. (#1025, #1024)
+- Add support for sending Sony at 38Khz (#1029, #1018, #1019)
+- auto_analyse_raw_data.py: Handle analysing messages with no headers. (#1017)
+
+**[Misc]**
+- Fix Coolix unit test errors when using Apple c++ compiler. (#1030, #1028)
+- Fix Apple clang c++ compiler error in unit tests. (#1027, #1026)
+- Improve/fix scraping of supported devices (#1022)
+- Panasonic PKR series A/C uses DKE protocol. (#1020, #1021)
+- Update NEC supported devices. (#1018)
+- Add note to avoid GPIO16 on the ESP8266 for receiving. (#1016, #1015)
+
+
+## _v2.7.2 (20200106)_
+
+**[Bug Fixes]**
+- Common AC api: Better handle protocols with power toggles. (#1002)
+
+**[Features]**
+- Experimental detailed support for LG a/c. (#1008 #1009)
+
+**[Misc]**
+- Add remote codes for Aloka LED lamp. (#1005)
+- Improve Supported Devices scraping. (#1006)
+
+
+## _v2.7.1 (20191125)_
+
+**[Bug Fixes]**
+- Hitachi424Ac: Fix Incorrect Power Byte Values (#987)
+- Coolix: Fix setPower(false) issue. (#990)
+
+**[Features]**
+- Use `char*` instead of `String` for common text. Saves ~1-3k. (#992, #989)
+- Hitachi424Ac: Add Vertical Swing ability (#986)
+
+**[Misc]**
+- IRMQTTServer: Update HA example/discovery message. (#995)
+- Move newly added common text to a better location. (#993)
+
+
 ## _v2.7.0 (20191030)_
 
 **[Bug Fixes]**
